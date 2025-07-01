@@ -57,18 +57,20 @@
   </div>
 
   <script>
-    const m3uUrl = '/api/proxy?url=' + encodeURIComponent('https://raw.githubusercontent.com/SeruiSO/IPTVSO/main/ua.m3u');
+    const m3uUrl = 'https://raw.githubusercontent.com/SeruiSO/IPTVSO/main/ua.m3u';
     let currentHls = null;
 
     async function fetchM3U() {
       try {
+        console.log('Завантаження M3U з:', m3uUrl);
         const response = await fetch(m3uUrl);
-        if (!response.ok) throw new Error('Не вдалося завантажити M3U файл');
+        console.log('Статус відповіді:', response.status, response.statusText);
+        if (!response.ok) throw new Error(`Не вдалося завантажити M3U файл: ${response.status} ${response.statusText}`);
         const text = await response.text();
         parseM3U(text);
       } catch (error) {
         console.error('Помилка завантаження M3U:', error);
-        document.getElementById('channelList').innerHTML = '<p class="text-red-500">Не вдалося завантажити список каналів.</p>';
+        document.getElementById('channelList').innerHTML = `<p class="text-red-500">Помилка завантаження списку каналів: ${error.message}</p>`;
       }
     }
 
@@ -99,6 +101,7 @@
         }
       }
 
+      console.log('Знайдено каналів:', channels.length);
       displayChannels(channels);
     }
 
@@ -124,6 +127,7 @@
     }
 
     function playChannel(url) {
+      console.log('Відтворення каналу:', url);
       const videoPlayer = document.getElementById('videoPlayer');
       if (currentHls) {
         currentHls.destroy();
