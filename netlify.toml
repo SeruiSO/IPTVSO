@@ -5,7 +5,7 @@
   force = true
   query = { url = ":url" }
   headers = { 
-    Access-Control-Allow-Origin = "*",
-    Access-Control-Allow-Methods = "GET, OPTIONS",
-    Access-Control-Allow-Headers = "Range, Content-Type"
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Methods = "GET,OPTIONS"
+    Access-Control-Allow-Headers = "Range,Content-Type"
   }
