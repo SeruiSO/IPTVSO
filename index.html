@@ -43,7 +43,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>IPTV Плеєр</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="/styles.css" rel="stylesheet">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 </head>
 <body class="bg-gray-100 font-sans">
@@ -56,7 +57,8 @@
   </div>
 
   <script>
-    const m3uUrl = 'https://raw.githubusercontent.com/SeruiSO/IPTVSO/refs/heads/main/ua.m3u';
+    const m3uUrl = '/api/proxy?url=' + encodeURIComponent('https://raw.githubusercontent.com/SeruiSO/IPTVSO/main/ua.m3u');
+    let currentHls = null;
 
     async function fetchM3U() {
       try {
@@ -91,7 +93,7 @@
             currentChannel.name = matches[2];
           }
         } else if (line && !line.startsWith('#') && currentChannel) {
-          currentChannel.url = line;
+          currentChannel.url = '/api/proxy?url=' + encodeURIComponent(line.replace(/^http:/, 'https:'));
           channels.push(currentChannel);
           currentChannel = null;
         }
@@ -109,7 +111,7 @@
         div.className = 'bg-white p-4 rounded shadow hover:bg-gray-100 cursor-pointer';
         div.innerHTML = `
           <div class="flex items-center">
-            ${channel.logo ? `<img src="${channel.logo}" alt="${channel.name}" class="w-12 h-12 mr-4">` : ''}
+            ${channel.logo ? `<img src="${channel.logo}" alt="${channel.name}" class="w-12 h-12 mr-4" onerror="this.src='https://via.placeholder.com/48'">` : ''}
             <div>
               <h3 class="font-semibold">${channel.name}</h3>
               <p class="text-sm text-gray-600">${channel.group}</p>
@@ -123,10 +125,14 @@
 
     function playChannel(url) {
       const videoPlayer = document.getElementById('videoPlayer');
+      if (currentHls) {
+        currentHls.destroy();
+        currentHls = null;
+      }
       if (Hls.isSupported()) {
-        const hls = new Hls();
-        hls.loadSource(url);
-        hls.attachMedia(videoPlayer);
+        currentHls = new Hls();
+        currentHls.loadSource(url);
+        currentHls.attachMedia(videoPlayer);
         videoPlayer.play().catch(error => {
           console.error('Помилка відтворення:', error);
           alert('Не вдалося відтворити канал. Можливо, потік недоступний або геообмежений.');
