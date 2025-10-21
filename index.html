@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Введення валют</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="/icons/icon-192.png">
+  <meta name="theme-color" content="#121212">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Вибір таблиці -->
+    <div class="controls">
+      <label for="spreadsheetSelect">Таблиця:</label>
+      <select id="spreadsheetSelect">
+        <option value="1--sn71S8Mb6c2U91wpTF6s8_WWITRNgaqvE30MT4Sh8">Основна таблиця</option>
+        <!-- Додайте інші ID таблиць тут -->
+      </select>
+    </div>
+    <!-- Вкладка валют -->
+    <div id="tab-currency" class="tab-content active">
+      <div class="form-container">
+        <div class="form-header">
+          <select id="operation">
+            <option value="buy">Купівля</option>
+            <option value="sell">Продаж</option>
+          </select>
+          <select id="dateInput">
+            <option value="01">01</option>
+            <option value="02">02</option>
+            <option value="03">03</option>
+            <option value="04">04</option>
+            <option value="05">05</option>
+            <option value="06">06</option>
+            <option value="07">07</option>
+            <option value="08">08</option>
+            <option value="09">09</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+            <option value="17">17</option>
+            <option value="18">18</option>
+            <option value="19">19</option>
+            <option value="20">20</option>
+            <option value="21">21</option>
+            <option value="22">22</option>
+            <option value="23">23</option>
+            <option value="24">24</option>
+            <option value="25">25</option>
+            <option value="26">26</option>
+            <option value="27">27</option>
+            <option value="28">28</option>
+            <option value="29">29</option>
+            <option value="30">30</option>
+            <option value="31">31</option>
+          </select>
+        </div>
+
+        <table class="currency-table">
+          <thead>
+            <tr>
+              <th>Валюта</th>
+              <th>Сума</th>
+              <th>Курс</th>
+              <th>ГРН</th>
+            </tr>
+          </thead>
+          <tbody id="currencyTableBody"></tbody>
+          <tfoot>
+            <tr class="total-row">
+              <td colspan="2"><b>РАЗОМ ГРН</b></td>
+              <td colspan="2"><input type="text" id="total_grn" readonly></td>
+            </tr>
+          </tfoot>
+        </table>
+
+        <div class="loader" id="loader"></div>
+        
+        <div class="action-buttons">
+          <button type="button" id="saveButton">Зберегти</button>
+          <button type="button" id="fetchButton">Підтягнути</button>
+        </div>
+
+        <div class="message-list" id="messageList"></div>
+
+        <div id="confirmModal" class="modal">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3>Підтвердження операції</h3>
+              <div id="modalPreviewHeader"></div>
+              <hr>
+            </div>
+            <table class="modal-table">
+              <thead>
+                <tr>
+                  <th>Валюта</th>
+                  <th>Сума</th>
+                  <th>Курс</th>
+                  <th>ГРН</th>
+                </tr>
+              </thead>
+              <tbody id="modalTableBody"></tbody>
+              <tfoot>
+                <tr class="total-row">
+                  <td colspan="3"><b>РАЗОМ ГРН</b></td>
+                  <td><input type="text" id="modalTotalGrn" readonly></td>
+                </tr>
+              </tfoot>
+            </table>
+            <div class="modal-buttons">
+              <button id="cancelButton" class="cancel-btn">Скасувати</button>
+              <button id="confirmButton" class="confirm-btn">Підтвердити</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="pointModal" class="modal">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3>Виберіть точку</h3>
+              <hr>
+            </div>
+            <select id="pointSelect">
+              <option value="point1">U6KA_Inkas</option>
+              <option value="point2">KASP_Inkas</option>
+              <option value="point3">GL_Inkas</option>
+              <option value="point4">TAR_Inkas</option>
+              <option value="point5">4UDO_Inkas</option>
+              <option value="point6">KR_Inkas</option>
+              <option value="point7">BAZAR_Inkas</option>
+              <option value="point8">BUBNA_Inkas</option>
+            </select>
+            <div class="modal-buttons">
+              <button onclick="closePointModal()" class="cancel-btn">Скасувати</button>
+              <button id="fetchDataButton" onclick="fetchPointData()">Підтягнути дані</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Вкладка історії -->
+    <div id="tab-history" class="tab-content">
+      <div class="history-container">
+        <h2>Історія операцій</h2>
+        <div class="loader" id="historyLoader"></div>
+        <div id="historyContent"></div>
+        <div class="message-list" id="historyMessageList"></div>
+
+        <div id="undoModal" class="modal">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3>Скасування операції</h3>
+              <div id="undoPreviewHeader"></div>
+              <hr>
+            </div>
+            <table class="modal-table">
+              <thead>
+                <tr>
+                  <th>Валюта</th>
+                  <th>Сума</th>
+                  <th>Курс</th>
+                  <th>Час</th>
+                  <th>ГРН</th>
+                </tr>
+              </thead>
+              <tbody id="undoTableBody"></tbody>
+            </table>
+            <div class="modal-buttons">
+              <button id="undoCancelButton" class="cancel-btn">Скасувати</button>
+              <button id="undoConfirmButton" class="danger-btn">Видалити</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Вкладка витрат -->
+    <div id="tab-expenses" class="tab-content">
+      <div class="expenses-container">
+        <h2>Витрати</h2>
+        <table class="expenses-table">
+          <thead>
+            <tr>
+              <th>Категорія</th>
+              <th>Сума (ГРН)</th>
+            </tr>
+          </thead>
+          <tbody id="expensesTableBody"></tbody>
+        </table>
+        <div class="loader" id="expensesLoader"></div>
+        <div class="action-buttons">
+          <button type="button" id="saveExpensesButton">Зберегти витрати</button>
+        </div>
+        <div class="message-list" id="expensesMessageList"></div>
+      </div>
+    </div>
+
+    <!-- Вкладка залишків -->
+    <div id="tab-balances" class="tab-content">
+      <div class="balances-container">
+        <h2>Залишки валют</h2>
+        <table class="balances-table">
+          <thead>
+            <tr>
+              <th>Валюта</th>
+              <th>Залишок</th>
+            </tr>
+          </thead>
+          <tbody id="balancesTableBody"></tbody>
+        </table>
+        <div class="loader" id="balancesLoader"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Навігація вкладок -->
+  <div class="tabs-container">
+    <div class="tab active" data-tab="tab-currency">Валюта</div>
+    <div class="tab" data-tab="tab-history">Історія</div>
+    <div class="tab" data-tab="tab-expenses">Витрати</div>
+    <div class="tab" data-tab="tab-balances">Залишки</div>
+    <div class="theme-switcher" onclick="cycleTheme()">🌓</div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
