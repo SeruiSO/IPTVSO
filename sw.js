@@ -1,11 +1,11 @@
-const CACHE_NAME = 'currency-app-v1';
+const CACHE_NAME = 'currency-app-v2';
 const ASSETS = [
   '/',
   '/index.html',
   '/styles.css',
   '/script.js',
-  '/icons/icon-192.png',
-  '/icons/icon-512.png'
+  '/icon-192.png',
+  '/icon-512.png'
 ];
 
 // Встановлення Service Worker

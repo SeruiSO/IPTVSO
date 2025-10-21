@@ -1,3 +1,6 @@
+// Визначення URL для Google Apps Script Web App
+const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbylt9VZp6SkA1N4DaL8UkXyIxc9XLjSnc6Bpj49cF_RUL-wkgGyz50Ut6Vns4a3829c/exec';
+
 // Ініціалізація змінних та констант
 let touchStartX = 0;
 let touchEndX = 0;
